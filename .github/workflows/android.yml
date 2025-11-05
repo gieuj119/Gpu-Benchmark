@@ -1,0 +1,43 @@
+name: Android Debug APK Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install gradle (if wrapper not present)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle || true
+
+      - name: Grant execute permission for Gradle wrapper (if exists)
+        run: chmod +x ./gradlew || true
+
+      - name: Build debug APK
+        run: |
+          if [ -f "./gradlew" ]; then
+            ./gradlew assembleDebug --no-daemon
+          else
+            gradle assembleDebug --no-daemon
+          fi
+
+      - name: Upload built APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GPU-Benchmark-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
