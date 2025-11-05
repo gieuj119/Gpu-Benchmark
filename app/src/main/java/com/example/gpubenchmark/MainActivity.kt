@@ -1,5 +1,5 @@
-rootProject.name = "GPU-Benchmark"
-include(":app")
+rootProject.name = "Gpu-Benchmark"
+include ':app'
 buildscript {
     repositories { google(); mavenCentral() }
 }
